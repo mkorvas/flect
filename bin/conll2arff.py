@@ -16,7 +16,7 @@ Usage: ./conll2arff.py [-c X] [-f X] [-n] input.conll output.arff
 """
 
 
-from __future__ import unicode_literals
+
 
 import getopt
 import sys
@@ -32,7 +32,7 @@ def display_usage():
     """\
     Display program usage information.
     """
-    print >> sys.stderr, __doc__
+    print(__doc__, file=sys.stderr)
 
 
 def convert(in_file, out_file, feat_no, use_feat_names, cpos_chars):
@@ -63,7 +63,7 @@ def convert(in_file, out_file, feat_no, use_feat_names, cpos_chars):
         inst['LemmaFormDiff_Front'] = escr_front
         inst['LemmaFormDiff_Back'] = escr_midback
         # lemma suffixes
-        for i in xrange(1, 9):
+        for i in range(1, 9):
             inst['LemmaSuff_' + str(i)] = lemma[-i:]
         # coarse POS
         inst['Tag_CPOS'] = pos[:cpos_chars]
@@ -84,7 +84,7 @@ def convert(in_file, out_file, feat_no, use_feat_names, cpos_chars):
     data = DataSet()
     attr_order = ['sent_id', 'word_id', 'Lemma', 'Form',
             'LemmaFormDiff_Front', 'LemmaFormDiff_Back']
-    for i in xrange(1, 9):
+    for i in range(1, 9):
         attr_order.append('LemmaSuff_' + str(i))
     attr_order.extend(['Tag_POS', 'Tag_CPOS'])
     data.load_from_dict(buf, {'word_id': 'numeric'}, attr_order)

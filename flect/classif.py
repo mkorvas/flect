@@ -7,8 +7,8 @@ pass the features to the internal Scikit-Learn classifier; no inflection
 is involved.
 """
 
-from __future__ import unicode_literals
-from model import Model
+
+from .model import Model
 import re
 
 __author__ = "Ondřej Dušek"
@@ -54,7 +54,7 @@ class FlectClassifier(object):
         of classes otherwise.
         """
         return_string = False
-        if isinstance(insts, basestring):
+        if isinstance(insts, str):
             insts = self.parse_factored(insts)
             return_string = True
         # obtain features for classification

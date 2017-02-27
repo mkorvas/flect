@@ -6,7 +6,7 @@
 Training sklearn models with flect.model (helper functions to bin/train.py).
 """
 
-from __future__ import unicode_literals
+
 
 import re
 import os
@@ -65,7 +65,7 @@ def create_job(config, name, work_dir, train_file, model_file,
     job.code = "run_training('{0}', '{1}',".format(work_dir, cfg_file) + \
             "'{0}', '{1}', {2})\n".format(train_file, model_file, test_str)
     job.submit(memory=memory)
-    print 'Job', job, 'submitted.'
+    print('Job', job, 'submitted.')
     # print job.get_script_text()
 
 
@@ -74,7 +74,7 @@ def marshal_lambda(config, key):
     Marshal a lambda function under the given key in the config.
     """
     if key in config:
-        code = config[key].func_code
+        code = config[key].__code__
         config[key] = marshal.dumps(code)
 
 

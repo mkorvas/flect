@@ -5,11 +5,11 @@
 Using Flect for inflection according to predicted edit scripts.
 """
 
-from __future__ import unicode_literals
+
 import re
-from varutil import first
+from .varutil import first
 from functools import partial
-from classif import FlectClassifier
+from .classif import FlectClassifier
 
 
 __author__ = "Ondřej Dušek"
@@ -102,7 +102,7 @@ class SentenceInflector(FlectClassifier):
         of word forms otherwise.
         """
         return_string = False
-        if isinstance(sent, basestring):
+        if isinstance(sent, str):
             sent = self.parse_factored(sent)
             return_string = True
         if sent == '' or sent is None:  # rule out weird cases

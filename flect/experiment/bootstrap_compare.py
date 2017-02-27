@@ -10,7 +10,7 @@ Usage:
 ./bootstrap_compare.py [-i] -g gold_attr -p predicted_attr system1-output.arff system2-output.arff
 """
 
-from __future__ import unicode_literals
+
 
 from flect.dataset import DataSet, Attribute
 from flect.logf import log_info
@@ -22,7 +22,7 @@ def display_usage():
     """\
     Display program usage information.
     """
-    print >> sys.stderr, __doc__
+    print(__doc__, file=sys.stderr)
 
 
 def pairwise_bootstrap(file1, file2, gold_attr, pred_attr, cmp_func, iters):
@@ -35,7 +35,7 @@ def pairwise_bootstrap(file1, file2, gold_attr, pred_attr, cmp_func, iters):
     p1 = d1.attrib_as_vect(pred_attr)
     p2 = d2.attrib_as_vect(pred_attr)
     p1_better, p2_better, ties = 0, 0, 0
-    for i in xrange(iters):
+    for i in range(iters):
         sample = rnd.randint(0, len(gold), len(gold))
         s_p1_good = sum(1 if cmp_func(gold[i], p1[i]) else 0 for i in sample)
         s_p2_good = sum(1 if cmp_func(gold[i], p2[i]) else 0 for i in sample)
@@ -48,10 +48,10 @@ def pairwise_bootstrap(file1, file2, gold_attr, pred_attr, cmp_func, iters):
             p2_better += 1
         else:
             ties += 1
-    print ('File1 better: %d (%2.2f) | File2 better: %d (%2.2f) |' +
+    print(('File1 better: %d (%2.2f) | File2 better: %d (%2.2f) |' +
            ' ties: %d (%2.2f)') % (p1_better, float(p1_better) / iters * 100,
                                    p2_better, float(p2_better) / iters * 100,
-                                   ties, float(ties) / iters * 100,)
+                                   ties, float(ties) / iters * 100,))
 
 
 def main():

@@ -21,7 +21,7 @@ If unfold_pattern is specified, subdirectories are created in the main
 working directory for each model variant.
 """
 
-from __future__ import unicode_literals
+
 
 import sys
 import getopt
@@ -41,7 +41,7 @@ def display_usage():
     """\
     Display program usage information.
     """
-    print >> sys.stderr, __doc__
+    print(__doc__, file=sys.stderr)
 
 
 def main():
@@ -70,7 +70,7 @@ def main():
         work_dir, config, train_pattern, model_pattern = filenames
         train_files = get_files(train_pattern)
         for key, train_file in train_files:
-            print >> sys.stderr, key
+            print(key, file=sys.stderr)
             model_file = model_pattern.replace('*', key)
             run_training(work_dir, config, train_file, model_file, memory=memory, name=(job_name + key))
         sys.exit(0)

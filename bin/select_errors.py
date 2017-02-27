@@ -11,7 +11,7 @@ Usage:
 Predicted attribute name defaults to 'PREDICTED'.
 """
 
-from __future__ import unicode_literals
+
 
 from flect.dataset import DataSet, Attribute
 from flect.logf import log_info
@@ -23,7 +23,7 @@ def display_usage():
     """\
     Display program usage information.
     """
-    print >> sys.stderr, __doc__
+    print(__doc__, file=sys.stderr)
 
 
 def main():

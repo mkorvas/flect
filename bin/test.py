@@ -26,7 +26,7 @@ Usage: ./flect_test.py -h for this help
 
 """
 
-from __future__ import unicode_literals
+
 import sys
 import getopt
 import regex
@@ -43,7 +43,7 @@ def display_usage():
     """\
     Display program usage information.
     """
-    print >> sys.stderr, __doc__
+    print(__doc__, file=sys.stderr)
 
 
 def evaluate_oov(data, source_attr, target_attr, forms_attr,
@@ -80,7 +80,7 @@ def evaluate_poses(data, gold_attr, predict_attr, pos_attr):
     Print scores for different POSes.
     """
     poses = data.split(lambda _, i: i[pos_attr])
-    for pos, pos_data in poses.iteritems():
+    for pos, pos_data in poses.items():
         good = count_correct(pos_data, gold_attr, predict_attr)
         print_score(good, len(pos_data), 'POS = ' + pos)
 

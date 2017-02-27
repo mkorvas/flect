@@ -2,18 +2,18 @@
 # coding=utf-8
 
 
-from __future__ import unicode_literals
+
 import os
-import commands
+import subprocess
 import string
 import random
 import codecs
 import sys
 import re
 import time
-from varutil import first
+from .varutil import first
 import collections
-from logf import log_warn
+from .logf import log_warn
 
 """\
 Interface for running any Python code as a job on the cluster
@@ -141,11 +141,11 @@ from __future__ import unicode_literals
         # create working directory if necessary
         if not os.path.isdir(self.work_dir):
             os.mkdir(self.work_dir)
-        cwd = os.getcwdu()
+        cwd = os.getcwd()
         os.chdir(self.work_dir)
         # create the script
         script_fh = codecs.open(self.name + '.py', 'w', 'UTF-8')
-        print >> script_fh, self.get_script_text()
+        print(self.get_script_text(), file=script_fh)
         script_fh.close()
         # submit the script
         command = 'qsub ' + self.__get_resource_requests() + \
@@ -228,7 +228,7 @@ from __future__ import unicode_literals
         """\
         Adds a dependency on the given Job(s).
         """
-        if isinstance(dependency, Job) or isinstance(dependency, basestring):
+        if isinstance(dependency, Job) or isinstance(dependency, str):
             self.__dependencies.append(dependency)
         elif isinstance(dependency, int):
             self.__dependencies.append(str(dependency))
@@ -243,7 +243,7 @@ from __future__ import unicode_literals
         Removes the given Job(s) from the dependencies list.
         """
         # single element removed
-        if isinstance(dependency, (Job, basestring, int)):
+        if isinstance(dependency, (Job, str, int)):
             if isinstance(dependency, int):
                 jobid = str(dependency)
             else:
@@ -313,7 +313,7 @@ from __future__ import unicode_literals
         """
         return self.NAME_PREFIX + \
             ''.join([random.choice(self.JOBNAME_LEGAL_CHARS)
-                     for _ in xrange(5)])
+                     for _ in range(5)])
 
     def __get_work_dir(self):
         """\
@@ -322,7 +322,7 @@ from __future__ import unicode_literals
         num = 1
         workdir = None
         while workdir is None or os.path.exists(workdir):
-            workdir = (os.getcwdu() + os.path.sep + self.DIR_PREFIX +
+            workdir = (os.getcwd() + os.path.sep + self.DIR_PREFIX +
                        self.name + '-' + str(num).zfill(3))
             num += 1
         return workdir
@@ -356,7 +356,7 @@ from __future__ import unicode_literals
         Try to run a command and return its output. If the command fails,
         throw a RuntimeError.
         """
-        status, output = commands.getstatusoutput(cmd)
+        status, output = subprocess.getstatusoutput(cmd)
         if status != 0:
             raise RuntimeError('Command \'' + cmd + '\' failed. Status: ' +
                                str(status) + ', Output: ' + output)

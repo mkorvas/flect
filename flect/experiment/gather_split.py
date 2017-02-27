@@ -6,10 +6,10 @@
 Helper function for models split using ML-Process (http://code.google.com/p/en-deep).
 """
 
-from __future__ import unicode_literals
+
 from os import listdir
 from os.path import isfile, join, sep
-from fnames import build_model_keyset
+from .fnames import build_model_keyset
 #from sklearn.dummy import DummyClassifier
 from flect.config import Config
 from flect.model import SplitModel, Model
@@ -34,7 +34,7 @@ def gather_split_model(in_dir, out_prefix, divide_func, save_nodummy, cfg_file, 
     tm.save_to_file(out_prefix + '.pickle')
     # create and save no-dummy model
     if save_nodummy:
-        for key in tm.models.keys():
+        for key in list(tm.models.keys()):
             if len(tm.models[key].data_headers.get_attrib(tm.models[key].class_attr).values) == 1:
                 del tm.models[key]
         tm.save_to_file(out_prefix + '.nodummy.pickle')
@@ -61,23 +61,23 @@ def split_model_best(in_dir, out_prefix, divide_func, dtest_dir,
                    if isfile(join(in_dir, f)) and f.startswith(fname_start) and f.endswith(fname_end)]
     model_keys_flat = build_model_keyset(fname_start + '*' + fname_end, model_files)
     model_keys_hier = {}
-    for key, model_file in model_keys_flat.iteritems():
+    for key, model_file in model_keys_flat.items():
         if not param_sep in key:
-            print >> sys.stderr, 'No param-sep in file name:', model_file
+            print('No param-sep in file name:', model_file, file=sys.stderr)
             continue
         key, param = key.split(param_sep)
         if not key in model_keys_hier:
             model_keys_hier[key] = {}
         model_keys_hier[key][param] = model_file
     model_keys_best = {}
-    for key in model_keys_hier.iterkeys():
-        print >> sys.stderr, key.encode('utf-8')
+    for key in model_keys_hier.keys():
+        print(key.encode('utf-8'), file=sys.stderr)
         sys.stderr.flush()
         dtest_file = join(dtest_dir, dtest_start + key + dtest_end)
         if isfile(dtest_file):
             best_acc = -1
             best_param = default_param
-            for param, model_file in model_keys_hier[key].iteritems():
+            for param, model_file in model_keys_hier[key].items():
                 m = Model.load_from_file(model_file)
                 acc = m.evaluate(dtest_file)
                 if acc > best_acc:

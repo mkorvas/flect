@@ -20,7 +20,7 @@ Usage on ARFF files from the command line:
 The switches may be combined and will be applied in the above order.
 """
 
-from __future__ import unicode_literals
+
 
 import re
 import flect.flect
@@ -124,13 +124,13 @@ def add_substr_attributes(data, sub_len, attrib):
     the position of the substrings (negative = end, positive = beginning)
     """
     attrib = data.get_attrib(attrib).name
-    for l in xrange(1, abs(sub_len) + 1):
+    for l in range(1, abs(sub_len) + 1):
         values = []
         for i, inst in enumerate(data):
             try:
                 values.append(inst[attrib][:l].lower() if sub_len > 0 else [attrib][-l:].lower())
             except Exception as e:
-                log_warn('Fatal error at instance %d : ' % i + unicode(inst))
+                log_warn('Fatal error at instance %d : ' % i + str(inst))
                 raise e
 
         new_name = attrib + '_SUBSTR' + ('+' if sub_len > 0 else '-') + str(l)
@@ -141,7 +141,7 @@ def display_usage():
     """\
     Display program usage information.
     """
-    print >> sys.stderr, __doc__
+    print(__doc__, file=sys.stderr)
 
 
 def main():

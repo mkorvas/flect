@@ -11,7 +11,7 @@ Just one of the configuration files is needed (for data headers, which must be
 the same for all models).
 """
 
-from __future__ import unicode_literals
+
 from flect.config import Config
 from flect.model import ConcatModel
 import sys

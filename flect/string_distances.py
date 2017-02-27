@@ -29,7 +29,7 @@ Alternatively, input a pair of words on the command line to just
 see their edit script.
 """
 
-from __future__ import unicode_literals
+
 import numpy as np
 import getopt
 import sys
@@ -328,14 +328,14 @@ def compare(s, t, match, gap, details):
     out = codecs.getwriter('utf-8')(sys.stdout)
     if details:
         H, path = traverse_matrix(s, t, match, gap)
-        print >> out, H
-        print >> out, path
-        print >> out, 'Similarity:', sim_score(s, t, match, gap)
-        print >> out, 'Alignment:', alignment(s, t, match, gap)
-    print >> out, 'Diff:', merged_diff(s, t, match, gap), 'Edit script:', \
-            edit_script(s, t, match, gap)
-    print >> out, 'Diff:', merged_diff(t, s, match, gap), \
-            'Inverse edit script:', inv_edit_script(t, s, match, gap)
+        print(H, file=out)
+        print(path, file=out)
+        print('Similarity:', sim_score(s, t, match, gap), file=out)
+        print('Alignment:', alignment(s, t, match, gap), file=out)
+    print('Diff:', merged_diff(s, t, match, gap), 'Edit script:', \
+            edit_script(s, t, match, gap), file=out)
+    print('Diff:', merged_diff(t, s, match, gap), \
+            'Inverse edit script:', inv_edit_script(t, s, match, gap), file=out)
 
 
 if __name__ == '__main__':
@@ -368,7 +368,7 @@ if __name__ == '__main__':
         compare(s, t, match, gap, details)
     else:
         while True:
-            line = raw_input()
+            line = input()
             line = codecs.decode(line.strip(), 'utf-8')
             if not line:
                 break

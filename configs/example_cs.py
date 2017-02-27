@@ -4,7 +4,7 @@
 # Example configuration file for Flect training.
 #
 
-from __future__ import unicode_literals
+
 
 # You need to import all classes that you use within the settings below
 from sklearn.feature_extraction.dict_vectorizer import DictVectorizer

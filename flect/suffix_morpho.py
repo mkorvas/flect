@@ -17,13 +17,13 @@ Usage if run from the command line:
     analysis to be remembered)
 """
 
-from __future__ import unicode_literals
+
 import sys
 
 from getopt import getopt
 
-from string_distances import inv_edit_script
-from flect import inflect
+from .string_distances import inv_edit_script
+from .flect import inflect
 import json
 import codecs
 import re
@@ -56,7 +56,7 @@ def train_suffixes(in_file, out_file,
 
     # initialize data structures
     suff = {'*': {}}
-    for suf_len in xrange(1, max_suf + 1):
+    for suf_len in range(1, max_suf + 1):
         suff[suf_len] = {}
     line_no = 0
     # setup input format (function to return (form, lemma, tag) triplets in an array)
@@ -87,21 +87,21 @@ def train_suffixes(in_file, out_file,
                     suf_lemmas[key] = suf_lemmas.get(key, 0) + 1
                 # other words get prefixes
                 else:
-                    for suf_len in xrange(1, max_suf + 1):
+                    for suf_len in range(1, max_suf + 1):
                         suf_lemmas = suff[suf_len].get(form[-suf_len:], {})
                         suff[suf_len][form[-suf_len:]] = suf_lemmas
                         key = '|'.join((diff, tag))
                         suf_lemmas[key] = suf_lemmas.get(key, 0) + 1
             line_no += 1
             if line_no % 10000 == 0:
-                print >> sys.stderr, str(line_no),
-    print >> sys.stderr, ''
+                print(str(line_no), end=' ', file=sys.stderr)
+    print('', file=sys.stderr)
 
     # prune according to the threshold
-    for _, suff_len in suff.iteritems():
+    for _, suff_len in suff.items():
         for suffix in suff_len:
             suff_len[suffix] = {tag_lemma: count
-                                for tag_lemma, count in suff_len[suffix].iteritems()
+                                for tag_lemma, count in suff_len[suffix].items()
                                 if count > threshold}
     # save the output
     out_file = codecs.open(out_file, 'w', 'UTF-8')
@@ -127,7 +127,7 @@ class Analyzer(object):
         data_suff = json.load(in_file)
         self.suff = {}
         self.lowercase = lowercase
-        for key in data_suff.keys():
+        for key in list(data_suff.keys()):
             try:
                 self.suff[int(key)] = data_suff[key]
             except:
@@ -147,7 +147,7 @@ class Analyzer(object):
         if word in self.suff['*']:
             analyzes = [an[1:] for an in self.suff['*'][word]]
         # try suffixes of decreasing length
-        for suf_len in xrange(self.max_suf_len, 0, -1):
+        for suf_len in range(self.max_suf_len, 0, -1):
             word_suf = word[-suf_len:]
             if word_suf not in self.suff[suf_len]:
                 continue
@@ -235,13 +235,13 @@ if __name__ == '__main__':
         files = files[1:]
         if not files:
             while True:
-                line = raw_input()
+                line = input()
                 line = codecs.decode(line.strip(), 'UTF-8')
                 if not line:
                     break
                 words = line.split(None, 1)
                 for word in words:
-                    print >> out, "\n".join(analyzer.analyze(word))
+                    print("\n".join(analyzer.analyze(word)), file=out)
         else:
             for word in files:
-                print >> out, "\n".join(analyzer.analyze(codecs.decode(word, 'UTF-8')))
+                print("\n".join(analyzer.analyze(codecs.decode(word, 'UTF-8'))), file=out)

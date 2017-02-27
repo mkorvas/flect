@@ -163,7 +163,7 @@ class Config(object):
         """
         if config_dict is None:
             config_dict = self.config
-        for key, val in new_config.iteritems():
+        for key, val in new_config.items():
             if isinstance(val, collections.Mapping):
                 subdict = self.update(val, config_dict.get(key, {}))
                 config_dict[key] = subdict
@@ -179,7 +179,7 @@ class Config(object):
         """
         if d is None:
             d = self.config
-        for k, v in d.iteritems():
+        for k, v in d.items():
             if isinstance(v, collections.Mapping):
                 self.config_replace(p, s, v)
             elif isinstance(v, str):
@@ -203,7 +203,7 @@ class Config(object):
         for key in part:
             dict_to_unfold = dict_to_unfold[key]
         # go through it and search for lists to unfold
-        for k, v in dict_to_unfold.iteritems():
+        for k, v in dict_to_unfold.items():
             # unfold lists
             if type(v) is list and (pattern is None or re.search(pattern, k)):
                 unfolded = []

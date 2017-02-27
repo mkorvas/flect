@@ -16,7 +16,7 @@ Prints the percentages of data:
 
 """
 
-from __future__ import unicode_literals
+
 import sys
 import getopt
 import regex
@@ -29,8 +29,8 @@ __date__ = "2013"
 
 def print_feat(data, func, label):
     filtered = data[func]
-    print('Data %s: %d (%2.2f)' %
-          (label, len(filtered), float(len(filtered)) / len(data) * 100))
+    print(('Data %s: %d (%2.2f)' %
+          (label, len(filtered), float(len(filtered)) / len(data) * 100)))
 
 
 def get_stats(data_file, train_file, source_attr, target_attr):
@@ -57,7 +57,7 @@ def display_usage():
     """\
     Display program usage information.
     """
-    print >> sys.stderr, __doc__
+    print(__doc__, file=sys.stderr)
 
 
 def main():

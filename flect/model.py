@@ -2,7 +2,7 @@
 # coding=utf-8
 #
 #
-from __future__ import unicode_literals
+
 
 """\
 Representing, training and saving scikit-learn classification models.
@@ -10,15 +10,15 @@ Representing, training and saving scikit-learn classification models.
 The main objects here are Model and SplitModel.
 """
 
-from varutil import file_stream
-from logf import log_info
+from .varutil import file_stream
+from .logf import log_info
 from sklearn.metrics import accuracy_score
-from dataset import DataSet
+from .dataset import DataSet
 from sklearn.dummy import DummyClassifier
 from sklearn.feature_extraction.dict_vectorizer import DictVectorizer
-from cluster import Job
+from .cluster import Job
 import numpy as np
-import cPickle as pickle
+import pickle as pickle
 import marshal
 import re
 import types
@@ -321,11 +321,11 @@ class Model(AbstractModel):
         if isinstance(data, DataSet):
             data = data.as_dict(select_attrib=self.attr_mask)
         else:
-            data = [{key: val for key, val in inst.items() if key in self.attr_mask}
+            data = [{key: val for key, val in list(inst.items()) if key in self.attr_mask}
                     for inst in data]
         # pre-filter attributes if filter_attr is set
         if self.filter_attr:
-            data = [{key: val for key, val in inst.items()
+            data = [{key: val for key, val in list(inst.items())
                      if self.filter_attr(key, val)} for inst in data]
         if not self.vectorizer_trained:
             self.vectorizer.fit(data)
@@ -353,7 +353,7 @@ class Model(AbstractModel):
         """
         if key in state and hasattr(state[key], '__call__'):
             try:
-                code = state[key].func_code
+                code = state[key].__code__
                 state[key] = marshal.dumps(code)
             except (AttributeError, ValueError):
                 # try to use original version if marshaling fails
@@ -431,7 +431,7 @@ class SplitModel(AbstractModel):
         jobs = []
         model_files = {}
         # save training files and create training jobs
-        for key, subset in train_split.iteritems():
+        for key, subset in train_split.items():
             fn = re.sub(r'(.arff(.gz)?)?$', '-' + key + '.arff.gz', train_file)
             fn = os.path.join(work_dir, os.path.basename(fn))
             subset.save_to_arff(fn, encoding)
@@ -449,20 +449,20 @@ class SplitModel(AbstractModel):
             job.wait()
         # load all models
         log_info('Training complete. Assembling model files...')
-        for key, model_file in model_files.iteritems():
+        for key, model_file in model_files.items():
             self.models[key] = Model.load_from_file(model_file)
         self.trained = True
         log_info('Training done.')
 
     def get_attr_mask(self):
-        return self.models.itervalues().next().get_attr_mask()
+        return iter(self.models.values()).next().get_attr_mask()
 
     @staticmethod
     def load_from_files(config, model_files):
         model = SplitModel(config)
-        for key, model_file in model_files.iteritems():
+        for key, model_file in model_files.items():
             model.models[key] = Model.load_from_file(model_file)
-        model.data_headers = model.models.itervalues().next().data_headers
+        model.data_headers = iter(model.models.values()).next().data_headers
         model.attr_mask = model.get_attr_mask()
         model.trained = True
         return model
